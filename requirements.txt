@@ -4,5 +4,4 @@ streamlit
 numpy
 plotly
 Image
-matplotlib
 
