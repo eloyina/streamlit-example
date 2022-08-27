@@ -1,38 +1,24 @@
-from collections import namedtuple
-import altair as alt
-import math
-import pandas as pd
 import streamlit as st
-
-"""
-# Welcome to Streamlit!
-
-Edit `/streamlit_app.py` to customize this app to your heart's desire :heart:
-
-If you have any questions, checkout our [documentation](https://docs.streamlit.io) and [community
-forums](https://discuss.streamlit.io).
-
-In the meantime, below is an example of what you can do with just a few lines of code:
-"""
+import matplotlib.pyplot as plt
+import numpy as np
+import time
+import pandas as pd
+import numpy as np
+import plotly.express as px
+from PIL import Image
 
 
-with st.echo(code_location='below'):
-    total_points = st.slider("Number of points in spiral", 1, 5000, 2000)
-    num_turns = st.slider("Number of turns in spiral", 1, 100, 9)
 
-    Point = namedtuple('Point', 'x y')
-    data = []
+st.sidebar.title (" Proyecto Individual #2")
+st.sidebar.subheader ("1.Cinco Estados con mayor ocupación hospitalaria por COVID")
+st.sidebar.subheader("2.Ocupación de camas (Común) por COVID en el Estado de Nueva York")
+st.sidebar.subheader("3. Los cinco Estados que más camas UCI -Unidades de Cuidados Intensivos- utilizaron durante el año 2020")
+st.sidebar.subheader("4. Cantidad de camas se utilizaron, por Estado, para pacientes pediátricos con COVID durante el 2020")
+st.sidebar.subheader("5. Porcentaje de camas UCI corresponden a casos confirmados de COVID-19")
+st.sidebar.subheader("6. Muertes por covid hubo, por Estado, durante el año 2021")
+st.sidebar.subheader("7. Relación presenta la falta de personal médico, con la cantidad de muertes por covid durante el año 2021")
+st.sidebar.subheader("8. ¿cuál fue el peor mes de la pandemia para USA en su conjunto? Puede utilizar otras medidas que considere necesarias.")
+st.sidebar.subheader("9.¿Qué recomendaciones haría, ex post, con respecto a los recursos hospitalarios y su uso?")
 
-    points_per_turn = total_points / num_turns
 
-    for curr_point_num in range(total_points):
-        curr_turn, i = divmod(curr_point_num, points_per_turn)
-        angle = (curr_turn + 1) * 2 * math.pi * i / points_per_turn
-        radius = curr_point_num / total_points
-        x = radius * math.cos(angle)
-        y = radius * math.sin(angle)
-        data.append(Point(x, y))
-
-    st.altair_chart(alt.Chart(pd.DataFrame(data), height=500, width=500)
-        .mark_circle(color='#0068c9', opacity=0.5)
-        .encode(x='x:Q', y='y:Q'))
+st.image("https://aqpagenda.com/headerhenry.png")
