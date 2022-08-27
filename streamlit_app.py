@@ -409,3 +409,130 @@ fig3.update_layout(
 fig3.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 
 st.plotly_chart(fig3)
+
+st.subheader (" Cantidad de camas se utilizaron, por Estado, para pacientes pediátricos con COVID durante el 2020")
+
+# Convert Date from Dtype 'Object' (or String) to Dtype 'Datetime'
+USCov["date"] = pd.to_datetime(USCov["date"])
+# Replace missing values '' with NAN and then 0
+USCov = USCov.replace('', np.nan).fillna(0)
+
+# Drop unnecessary columns
+
+# Replace missing values '' with NAN and then 0
+USCov1 = USCov.replace('', np.nan).fillna(0)
+
+###########fecha para 6 meses #################
+# Convert the date to datetime64
+USCov1['date'] = pd.to_datetime(USCov1['date'], format='%Y-%m-%d')
+  
+# Filter data between two dates
+USCov2 = USCov1.loc[(USCov1['date'] >= '2020-01-01')
+                     & (USCov1['date'] < '2020-12-31')]
+# Display
+####################################################
+#falta por rango etario
+
+list_states = sorted(pd.unique(USCov2['state']))
+
+dff2=USCov2.groupby("state")["staffed_icu_pediatric_patients_confirmed_covid"].sum().sort_values(ascending=False)
+  
+# Filter data between two dates
+USCov2 = USCov1.loc[(USCov1['date'] >= '2020-01-01')
+                     & (USCov1['date'] < '2020-12-31')]
+# Display
+
+####################################################
+#falta por rango etario
+
+list_states = sorted(pd.unique(USCov2['state']))
+####dff=pd.DataFrame(list_states)
+
+dff2=USCov2.groupby("state", as_index=False)["staffed_icu_pediatric_patients_confirmed_covid"].sum()
+#dff2= dff2.sort_values(ascending=False)
+
+dff23= pd.DataFrame(dff2)
+
+cleanup = {'state':{
+    'AK': 'Alaska',
+    'AL': 'Alabama',
+    'AR': 'Arkansas',
+    'AZ': 'Arizona',
+    'CA': 'California',
+    'CO': 'Colorado',
+    'CT': 'Connecticut',
+    'DC': 'District of Columbia',
+    'DE': 'Delaware',
+    'FL': 'Florida',
+    'GA': 'Georgia',
+    'HI': 'Hawaii',
+    'IA': 'Iowa',
+    'ID': 'Idaho',
+    'IL': 'Illinois',
+    'IN': 'Indiana',
+    'KS': 'Kansas',
+    'KY': 'Kentucky',
+    'LA': 'Louisiana',
+    'MA': 'Massachusetts',
+    'MD': 'Maryland',
+    'ME': 'Maine',
+    'MI': 'Michigan',
+    'MN': 'Minnesota',
+    'MO': 'Missouri',
+    'MS': 'Mississippi',
+    'MT': 'Montana',
+    'NC': 'North Carolina',
+    'ND': 'North Dakota',
+    'NE': 'Nebraska',
+    'NH': 'New Hampshire',
+    'NJ': 'New Jersey',
+    'NM': 'New Mexico',
+    'NV': 'Nevada',
+    'NY': 'New York',
+    'OH': 'Ohio',
+    'OK': 'Oklahoma',
+    'OR': 'Oregon',
+    'PA': 'Pennsylvania',
+    'RI': 'Rhode Island',
+    'SC': 'South Carolina',
+    'SD': 'South Dakota',
+    'TN': 'Tennessee',
+    'TX': 'Texas',
+    'UT': 'Utah',
+    'VA': 'Virginia',
+    'VT': 'Vermont',
+    'WA': 'Washington',
+    'WI': 'Wisconsin',
+    'WV': 'West Virginia',
+    'WY': 'Wyoming'
+}
+}
+dff23= dff23.replace(cleanup)
+
+
+list_states = sorted(pd.unique(USCov2['state']))
+
+fig44 = px.choropleth(dff23,
+                    title= 'PREGUNTA NRO 4',
+                    locations=list_states, 
+                    locationmode="USA-states", 
+                    scope="usa",
+                    color= 'staffed_icu_pediatric_patients_confirmed_covid',
+                    color_continuous_scale="Viridis_r", 
+                    labels={'staffed_icu_pediatric_patients_confirmed_covid' : "Nª Cama Ocupada por pacientes pediátricos"}
+                            
+                    )
+
+
+fig44.add_scattergeo(
+    locations=list_states,
+    locationmode='USA-states',
+    text=dff23['state'],
+    mode='text')
+fig44.update_layout(
+    title={'text':'Camas pediátricas',
+           'xanchor':'center',
+           'yanchor':'top',
+           'x':0.5})
+print("termine")
+st.plotly_chart(fig44)
