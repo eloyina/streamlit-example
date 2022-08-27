@@ -3,6 +3,7 @@ import numpy as np
 import time
 import pandas as pd
 import numpy as np
+import plotly.express as px
 from PIL import Image
 
 
