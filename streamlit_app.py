@@ -76,5 +76,108 @@ USCov1['date'] = pd.to_datetime(USCov1['date'], format='%Y-%m-%d')
 USCov2 = USCov1.loc[(USCov1['date'] >= '2020-01-01')
                      & (USCov1['date'] < '2020-06-01')]
 # Display
+####################################################
+#falta por rango etario
+
+list_states = sorted(pd.unique(USCov2['state']))
+####dff=pd.DataFrame(list_states)
+
+
+
+
+dff2=USCov2.groupby("state", as_index=False)["inpatient_beds_used_covid"].sum()
+dff2=dff2.sort_values('inpatient_beds_used_covid', ascending=False)
+dff23= pd.DataFrame(dff2)
+dff5=dff23.head(5)
+dff23= pd.DataFrame(dff2)
+
+##########
+cleanup = {'state':{
+    'AK': 'Alaska',
+    'AL': 'Alabama',
+    'AR': 'Arkansas',
+    'AZ': 'Arizona',
+    'CA': 'California',
+    'CO': 'Colorado',
+    'CT': 'Connecticut',
+    'DC': 'District of Columbia',
+    'DE': 'Delaware',
+    'FL': 'Florida',
+    'GA': 'Georgia',
+    'HI': 'Hawaii',
+    'IA': 'Iowa',
+    'ID': 'Idaho',
+    'IL': 'Illinois',
+    'IN': 'Indiana',
+    'KS': 'Kansas',
+    'KY': 'Kentucky',
+    'LA': 'Louisiana',
+    'MA': 'Massachusetts',
+    'MD': 'Maryland',
+    'ME': 'Maine',
+    'MI': 'Michigan',
+    'MN': 'Minnesota',
+    'MO': 'Missouri',
+    'MS': 'Mississippi',
+    'MT': 'Montana',
+    'NC': 'North Carolina',
+    'ND': 'North Dakota',
+    'NE': 'Nebraska',
+    'NH': 'New Hampshire',
+    'NJ': 'New Jersey',
+    'NM': 'New Mexico',
+    'NV': 'Nevada',
+    'NY': 'New York',
+    'OH': 'Ohio',
+    'OK': 'Oklahoma',
+    'OR': 'Oregon',
+    'PA': 'Pennsylvania',
+    'RI': 'Rhode Island',
+    'SC': 'South Carolina',
+    'SD': 'South Dakota',
+    'TN': 'Tennessee',
+    'TX': 'Texas',
+    'UT': 'Utah',
+    'VA': 'Virginia',
+    'VT': 'Vermont',
+    'WA': 'Washington',
+    'WI': 'Wisconsin',
+    'WV': 'West Virginia',
+    'WY': 'Wyoming'
+}
+}
+dff23= dff23.replace(cleanup)
+
+list_statess = dff5['state'].tolist()
+list_states = sorted(pd.unique(USCov2['state']))
+fig = px.colors.sequential.swatches_continuous()
+
+#######################
+
+
+####for dataname in USCov1.columns:
+##    print(dataname)
+fig = px.choropleth(dff5,
+                    title= 'PREGUNTA NRO 1',
+                    locations=list_statess, 
+                    locationmode="USA-states", 
+                    scope="usa",
+                    color= 'inpatient_beds_used_covid',
+                    color_continuous_scale="Viridis", 
+                            
+                    )
+
+
+fig.update_layout(
+    title={'text':'Cinco Estados con mayor ocupación hospitalaria por COVID',
+           'xanchor':'center',
+           'yanchor':'top',
+           'x':0.5})
+fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+
+st.plotly_chart(fig)
+
+
+
 
 
