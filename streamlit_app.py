@@ -672,3 +672,30 @@ st.plotly_chart(fig55)
 ###############################################################
 
 #########################################################
+###############################################################
+
+#########################################################
+
+####################################################
+#                 PREGUNTA 6                       #
+####################################################
+
+st.subheader("Muertes por covid hubo, por Estado, durante el año 2021")
+st.caption("Gráfico Nro 6:")
+
+# Convert Date from Dtype 'Object' (or String) to Dtype 'Datetime'
+USCov["date"] = pd.to_datetime(USCov["date"])
+# Replace missing values '' with NAN and then 0
+USCov = USCov.replace('', np.nan).fillna(0)
+
+# Drop unnecessary columns
+
+# Replace missing values '' with NAN and then 0
+USCov1 = USCov.replace('', np.nan).fillna(0)
+
+# Convert the date to datetime64
+USCov1['date'] = pd.to_datetime(USCov1['date'], format='%Y-%m-%d')
+USCov2 = USCov1.loc[(USCov1['date'] >= '2021-01-01')
+                      & (USCov1['date'] < '2021-12-31')]
+
+####################################################
