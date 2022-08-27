@@ -536,3 +536,139 @@ fig44.update_layout(
            'x':0.5})
 print("termine")
 st.plotly_chart(fig44)
+
+####################################################
+####################################################
+#                 PREGUNTA 5                      #
+####################################################
+st.subheader ("Porcentaje de camas UCI correspondiente a casos confirmados de COVID-19")
+
+# Convert Date from Dtype 'Object' (or String) to Dtype 'Datetime'
+USCov["date"] = pd.to_datetime(USCov["date"])
+# Replace missing values '' with NAN and then 0
+USCov = USCov.replace('', np.nan).fillna(0)
+
+# Drop unnecessary columns
+
+# Replace missing values '' with NAN and then 0
+USCov1 = USCov.replace('', np.nan).fillna(0)
+
+###########fecha para 6 meses #################
+# Convert the date to datetime64
+USCov1['date'] = pd.to_datetime(USCov1['date'], format='%Y-%m-%d')
+  
+# Display
+
+####################################################
+
+USCov1 = USCov1.loc[(USCov1['date'] >= '2020-01-01')
+                     & (USCov1['date'] < '2020-12-31')]
+
+dffT=USCov1.groupby("state", as_index=False)[["total_staffed_adult_icu_beds",
+                                             "total_staffed_adult_icu_beds_coverage",
+                                             "total_staffed_pediatric_icu_beds",
+                                             "total_staffed_pediatric_icu_beds_coverage",
+                                             "adult_icu_bed_covid_utilization",
+                                             "adult_icu_bed_covid_utilization_coverage",
+                                             "staffed_pediatric_icu_bed_occupancy",
+                                             "staffed_pediatric_icu_bed_occupancy_coverage"]].apply(sum)
+
+
+dffT['total_adult_beds_icu'] = dffT['total_staffed_adult_icu_beds'] + dffT['total_staffed_adult_icu_beds_coverage'] 
+dffT['total_pedriatic_beds_icu'] = dffT['total_staffed_pediatric_icu_beds'] + dffT['total_staffed_pediatric_icu_beds_coverage']
+dffT['total_beds_icu'] = dffT['total_adult_beds_icu'] + dffT['total_pedriatic_beds_icu']
+
+dffT['total_adult_beds_icu_oc'] = dffT['adult_icu_bed_covid_utilization'] + dffT['adult_icu_bed_covid_utilization_coverage'] 
+dffT['total_pedriatic_beds_icu_oc'] = dffT['staffed_pediatric_icu_bed_occupancy'] + dffT['staffed_pediatric_icu_bed_occupancy_coverage']
+dffT['total_beds_icu_oc'] = dffT['total_adult_beds_icu_oc'] + dffT['total_pedriatic_beds_icu_oc']
+
+# porcentaje de eso = (Total_camas_UCI - Camas_usada_COVID) / Total_camas_UCI
+dffT['percentage_beds_icu_oc'] = ((dffT['total_beds_icu'] - dffT['total_beds_icu_oc']) / dffT['total_beds_icu']) * 100
+
+dffT=dffT.sort_values('percentage_beds_icu_oc', ascending=False)
+
+cleanup = {'state':{
+    'AK': 'Alaska',
+    'AL': 'Alabama',
+    'AR': 'Arkansas',
+    'AZ': 'Arizona',
+    'CA': 'California',
+    'CO': 'Colorado',
+    'CT': 'Connecticut',
+    'DC': 'District of Columbia',
+    'DE': 'Delaware',
+    'FL': 'Florida',
+    'GA': 'Georgia',
+    'HI': 'Hawaii',
+    'IA': 'Iowa',
+    'ID': 'Idaho',
+    'IL': 'Illinois',
+    'IN': 'Indiana',
+    'KS': 'Kansas',
+    'KY': 'Kentucky',
+    'LA': 'Louisiana',
+    'MA': 'Massachusetts',
+    'MD': 'Maryland',
+    'ME': 'Maine',
+    'MI': 'Michigan',
+    'MN': 'Minnesota',
+    'MO': 'Missouri',
+    'MS': 'Mississippi',
+    'MT': 'Montana',
+    'NC': 'North Carolina',
+    'ND': 'North Dakota',
+    'NE': 'Nebraska',
+    'NH': 'New Hampshire',
+    'NJ': 'New Jersey',
+    'NM': 'New Mexico',
+    'NV': 'Nevada',
+    'NY': 'New York',
+    'OH': 'Ohio',
+    'OK': 'Oklahoma',
+    'OR': 'Oregon',
+    'PA': 'Pennsylvania',
+    'RI': 'Rhode Island',
+    'SC': 'South Carolina',
+    'SD': 'South Dakota',
+    'TN': 'Tennessee',
+    'TX': 'Texas',
+    'UT': 'Utah',
+    'VA': 'Virginia',
+    'VT': 'Vermont',
+    'WA': 'Washington',
+    'WI': 'Wisconsin',
+    'WV': 'West Virginia',
+    'WY': 'Wyoming'
+}
+}
+dffTT = dffT[['state', 'percentage_beds_icu_oc']]
+dffTT = pd.DataFrame(dffTT)
+dffTT= dffTT.replace(cleanup)
+
+
+list_statess = dffT['state'].tolist()
+list_states = sorted(pd.unique(USCov1['state']))
+fig55 = px.colors.sequential.swatches_continuous()
+
+fig55 = px.choropleth(dffTT,
+                    title= 'PREGUNTA NRO 5',
+                    locations=list_statess, 
+                    locationmode="USA-states", 
+                    scope="usa",
+                    color="percentage_beds_icu_oc",
+                    color_continuous_scale="Viridis_r",
+                    labels={'percentage_beds_icu_oc' : "Porcentaje"} 
+                    )
+
+
+fig55.update_layout(
+    title={'text':'Porcentaje camas UCI',
+           'xanchor':'center',
+           'yanchor':'top',
+           'x':0.5})
+
+st.plotly_chart(fig55)
+
+###############################################################
+
+#########################################################
