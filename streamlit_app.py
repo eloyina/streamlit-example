@@ -998,3 +998,94 @@ USCov2 = USCov1.loc[(USCov1['date'] > date1)
 ####################################################
 
 
+####dff=pd.DataFrame(list_states)
+
+dff2=USCov2.groupby("state", as_index=False)["total_adult_patients_hospitalized_confirmed_covid_coverage"].sum()
+dff2=dff2.sort_values('total_adult_patients_hospitalized_confirmed_covid_coverage', ascending=False)
+dff23= pd.DataFrame(dff2)
+
+
+cleanup = {'state':{
+    'AK': 'Alaska',
+    'AL': 'Alabama',
+    'AR': 'Arkansas',
+    'AZ': 'Arizona',
+    'CA': 'California',
+    'CO': 'Colorado',
+    'CT': 'Connecticut',
+    'DC': 'District of Columbia',
+    'DE': 'Delaware',
+    'FL': 'Florida',
+    'GA': 'Georgia',
+    'HI': 'Hawaii',
+    'IA': 'Iowa',
+    'ID': 'Idaho',
+    'IL': 'Illinois',
+    'IN': 'Indiana',
+    'KS': 'Kansas',
+    'KY': 'Kentucky',
+    'LA': 'Louisiana',
+    'MA': 'Massachusetts',
+    'MD': 'Maryland',
+    'ME': 'Maine',
+    'MI': 'Michigan',
+    'MN': 'Minnesota',
+    'MO': 'Missouri',
+    'MS': 'Mississippi',
+    'MT': 'Montana',
+    'NC': 'North Carolina',
+    'ND': 'North Dakota',
+    'NE': 'Nebraska',
+    'NH': 'New Hampshire',
+    'NJ': 'New Jersey',
+    'NM': 'New Mexico',
+    'NV': 'Nevada',
+    'NY': 'New York',
+    'OH': 'Ohio',
+    'OK': 'Oklahoma',
+    'OR': 'Oregon',
+    'PA': 'Pennsylvania',
+    'RI': 'Rhode Island',
+    'SC': 'South Carolina',
+    'SD': 'South Dakota',
+    'TN': 'Tennessee',
+    'TX': 'Texas',
+    'UT': 'Utah',
+    'VA': 'Virginia',
+    'VT': 'Vermont',
+    'WA': 'Washington',
+    'WI': 'Wisconsin',
+    'WV': 'West Virginia',
+    'WY': 'Wyoming'
+}
+}
+dff23= dff23.replace(cleanup)
+
+list_statess = dff5['state'].tolist()
+list_states = sorted(pd.unique(USCov2['state']))
+fig2 = px.colors.sequential.swatches_continuous()
+
+#######################
+fig22 = px.choropleth(dff5,
+                    locations=list_statess, 
+                    locationmode="USA-states", 
+                    scope="usa",
+                    color= 'total_adult_patients_hospitalized_confirmed_covid_coverage',
+                    color_continuous_scale="bugn_r",
+                    labels={'total_adult_patients_hospitalized_confirmed_covid_coverage' : "Camas usadas por estado en este tiempo"}
+
+                    )
+fig22.add_scattergeo(
+    locations=list_states,
+    locationmode='USA-states',
+    text=dff23['state'],
+    mode='text')
+fig22.update_layout(
+    title={'text':'En esta pregunta',
+           'xanchor':'center',
+           'yanchor':'top',
+           'x':0.5})
+fig22.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+
+st.plotly_chart(fig22)
+
