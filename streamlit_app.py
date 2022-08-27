@@ -20,3 +20,61 @@ st.sidebar.subheader("9.¿Qué recomendaciones haría, ex post, con respecto a l
 
 
 st.image("https://aqpagenda.com/headerhenry.png")
+
+st.title ("Proyecto Individual #2")
+st.header("Resultados del desarrollo del trabajo basado en el COVID 19 EN EEUU")
+container= st.container()
+
+container.write('Toda la data fue llenada con 0 si eran NANs')
+container.write('La fecha fue transformada a otro formato como fecha por año, mes y día')
+
+code ='''
+# Convert Date from Dtype 'Object' (or String) to Dtype 'Datetime'
+USCov["date"] = pd.to_datetime(USCov["date"])
+# Replace missing values '' with NAN and then 0
+USCov = USCov.replace('', np.nan).fillna(0)
+
+
+# Replace missing values '' with NAN and then 0
+USCov1 = USCov.replace('', np.nan).fillna(0)
+
+USCov1['date'] = pd.to_datetime(USCov1['date'], format='%Y-%m-%d')
+
+'''
+st.code(code, language='python')
+
+####################################################
+#                 PREGUNTA 1                       #
+####################################################
+
+
+st.subheader("Cinco Estados con mayor ocupación hospitalaria por COVID")
+container= st.container()
+container.write('La etiqueta utilizada fue: inpatient_beds_used_covid /n	Reported patients currently hospitalized in an inpatient bed who have suspected or confirmed COVID-19 in this state')
+
+urlCov = "https://healthdata.gov/resource/g62h-syeh.csv"
+
+USCov = pd.read_csv(urlCov)
+
+list_1819=USCov['previous_day_admission_adult_covid_confirmed_18_19'].tolist()
+
+# Convert Date from Dtype 'Object' (or String) to Dtype 'Datetime'
+USCov["date"] = pd.to_datetime(USCov["date"])
+# Replace missing values '' with NAN and then 0
+USCov = USCov.replace('', np.nan).fillna(0)
+
+# Drop unnecessary columns
+
+# Replace missing values '' with NAN and then 0
+USCov1 = USCov.replace('', np.nan).fillna(0)
+
+###########fecha para 6 meses #################
+# Convert the date to datetime64
+USCov1['date'] = pd.to_datetime(USCov1['date'], format='%Y-%m-%d')
+  
+# Filter data between two dates
+USCov2 = USCov1.loc[(USCov1['date'] >= '2020-01-01')
+                     & (USCov1['date'] < '2020-06-01')]
+# Display
+
+
