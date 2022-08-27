@@ -1089,3 +1089,100 @@ fig22.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 
 st.plotly_chart(fig22)
 
+
+##########################################
+###########pregunta 7 ########################
+
+st.subheader("¿cuál fue el peor mes de la pandemia para USA en su conjunto? Puede utilizar otras medidas que considere necesarias.")
+
+container= st.container()
+container.write('En la gráfica de la pregunta Nro 7, se muestra el pico de muertes que corresponde,')
+container.write('al mes de Junio del 2020 ')
+
+
+urlCov = "https://healthdata.gov/resource/g62h-syeh.csv"
+USCov = pd.read_csv(urlCov)
+
+# Convert Date from Dtype 'Object' (or String) to Dtype 'Datetime'
+USCov["date"] = pd.to_datetime(USCov["date"])
+# Replace missing values '' with NAN and then 0
+USCov = USCov.replace('', np.nan).fillna(0)
+
+# Drop unnecessary columns
+
+# Replace missing values '' with NAN and then 0
+USCov1 = USCov.replace('', np.nan).fillna(0)
+
+# Convert the date to datetime64
+USCov1['date'] = pd.to_datetime(USCov1['date'], format='%Y-%m-%d')
+USCov2 = USCov1.loc[(USCov1['date'] >= '2020-01-01')
+                      & (USCov1['date'] < '2022-08-01')]
+USCov2['used beds']=USCov1['inpatient_beds_used_covid_coverage']
+USCov2['death']=USCov1['deaths_covid']
+####################################################
+#print(USCov2[['date','state','death','used beds']])
+
+############ BY STATES ##################
+dff2=USCov2.groupby("state", as_index=False)["death"].sum()
+dff2=dff2.sort_values('death', ascending=False)
+dff23= pd.DataFrame(dff2)
+dft= pd.DataFrame(dff2)
+
+
+list_statess =dff2['state'].tolist()
+
+dff22=USCov2.groupby("state", as_index=False)[["critical_staffing_shortage_today_yes", "critical_staffing_shortage_today_not_reported"]].sum()
+dff232= pd.DataFrame(dff22)
+dft2= pd.DataFrame(dff22)
+
+dft2['staff_shortage_total'] = dft2["critical_staffing_shortage_today_yes"] + dft2["critical_staffing_shortage_today_not_reported"]
+
+
+print(dft.head(4))
+print(dft2.head(4))
+
+############ BY DATE ##################
+
+USCov3= pd.DataFrame(USCov2)
+USCov3['date']=USCov3['date']
+USCov3['year'] = pd.DatetimeIndex(USCov3['date']).year
+USCov3['month'] = pd.DatetimeIndex(USCov3['date']).month
+USCov3['day'] = pd.DatetimeIndex(USCov3['date']).day
+
+USCov3= USCov3[['state','date','year','month','day', 'death', 'critical_staffing_shortage_today_yes', 'critical_staffing_shortage_today_not_reported' ]]
+
+# Prepare data
+USCov3['month'] = [d.month for d in USCov3.date]
+USCov3['day'] = [d.day for d in USCov3.date]
+years = USCov3['month'].unique()
+
+USCov3=USCov3.sort_values('date', ascending=False)
+
+
+dff3=USCov3.groupby("date", as_index=False)["death"].sum()
+dft3= pd.DataFrame(dff3)
+
+dff32=USCov3.groupby("date", as_index=False)[["critical_staffing_shortage_today_yes", "critical_staffing_shortage_today_not_reported"]].sum()
+dff32= pd.DataFrame(dff32)
+dft4= pd.DataFrame(dff32)
+
+dft4['staff_shortage_total'] = dft4["critical_staffing_shortage_today_yes"] + dft4["critical_staffing_shortage_today_not_reported"]
+
+
+print(dft3.head(4))
+print(dft4.head(4))
+
+
+########## PLOT ######################
+fig88, axs = plt.subplots(2, figsize=(10,8))
+
+axs[0].plot(dft['state'], dft['death'], '*')
+axs[0].plot(dft2['state'], dft2['staff_shortage_total'], 'o')
+axs[0].tick_params(labelrotation=90)
+
+axs[1].plot(dft3['date'], dft3['death'])
+axs[1].plot(dft4['date'], dft4['staff_shortage_total'])
+
+fig88.legend(['death', 'staff_shortage_total'])
+
+st.plotly_chart(fig88)
