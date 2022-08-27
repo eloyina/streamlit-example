@@ -699,3 +699,91 @@ USCov2 = USCov1.loc[(USCov1['date'] >= '2021-01-01')
                       & (USCov1['date'] < '2021-12-31')]
 
 ####################################################
+
+cleanup = {'state':{
+    'AK': 'Alaska',
+    'AL': 'Alabama',
+    'AR': 'Arkansas',
+    'AZ': 'Arizona',
+    'CA': 'California',
+    'CO': 'Colorado',
+    'CT': 'Connecticut',
+    'DC': 'District of Columbia',
+    'DE': 'Delaware',
+    'FL': 'Florida',
+    'GA': 'Georgia',
+    'HI': 'Hawaii',
+    'IA': 'Iowa',
+    'ID': 'Idaho',
+    'IL': 'Illinois',
+    'IN': 'Indiana',
+    'KS': 'Kansas',
+    'KY': 'Kentucky',
+    'LA': 'Louisiana',
+    'MA': 'Massachusetts',
+    'MD': 'Maryland',
+    'ME': 'Maine',
+    'MI': 'Michigan',
+    'MN': 'Minnesota',
+    'MO': 'Missouri',
+    'MS': 'Mississippi',
+    'MT': 'Montana',
+    'NC': 'North Carolina',
+    'ND': 'North Dakota',
+    'NE': 'Nebraska',
+    'NH': 'New Hampshire',
+    'NJ': 'New Jersey',
+    'NM': 'New Mexico',
+    'NV': 'Nevada',
+    'NY': 'New York',
+    'OH': 'Ohio',
+    'OK': 'Oklahoma',
+    'OR': 'Oregon',
+    'PA': 'Pennsylvania',
+    'RI': 'Rhode Island',
+    'SC': 'South Carolina',
+    'SD': 'South Dakota',
+    'TN': 'Tennessee',
+    'TX': 'Texas',
+    'UT': 'Utah',
+    'VA': 'Virginia',
+    'VT': 'Vermont',
+    'WA': 'Washington',
+    'WI': 'Wisconsin',
+    'WV': 'West Virginia',
+    'WY': 'Wyoming'
+}
+}
+
+dff2=USCov2.groupby("state", as_index=False)["deaths_covid_coverage"].sum()
+dff2=dff2.sort_values('deaths_covid_coverage', ascending=False)
+dff23= pd.DataFrame(dff2)
+dff5=dff23
+print(dff5.head(20))
+
+dff23= dff23.replace(cleanup)
+
+
+list_states = sorted(pd.unique(USCov2['state']))
+
+list_statess = dff5['state'].tolist()
+fig6 = px.choropleth(dff5,
+                    locations=list_statess, 
+                    locationmode="USA-states", 
+                    scope="usa",
+                    color= 'deaths_covid_coverage',
+                    color_continuous_scale="plasma",
+                    title='Muertes por Covid del año 2021',
+                    labels={'deaths_covid_coverage' : "Muertes por Covid"}                                   
+                    )
+
+fig6.update_layout(
+    title={'text':'Muertes por covid por estado',
+           'xanchor':'center',
+           'yanchor':'top',
+           'x':0.5})
+fig6.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+
+st.plotly_chart(fig6)
+
+
